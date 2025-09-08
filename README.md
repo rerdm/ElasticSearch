@@ -1,3 +1,74 @@
+
+# ElasticSearch & Kibana Locally with Docker
+
+This project demonstrates how to run ElasticSearch and Kibana locally using Docker containers and access them via your browser.
+
+## Prerequisites
+
+
+## Dependencies
+
+For this project, you will need:
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (to run the containers)
+- [GNU Make](https://gnuwin32.sourceforge.net/packages/make.htm) or [Chocolatey](https://community.chocolatey.org/packages/make) (optional, for using the Makefile on Windows)
+
+You can also download GNU Make directly from SourceForge:
+- [GNU Make 3.81 Download (SourceForge)](https://sourceforge.net/projects/gnuwin32/files/make/3.81/)
+
+After downloading, extract the `make.exe` from the ZIP file and copy it to a folder of your choice. Add this folder to your Windows environment variable `PATH` so you can use `make` in the terminal.
+
+## Steps
+
+1. **Create Docker Compose File**
+	 Create a file named `docker-compose.yml` in your project folder with the following content:
+
+	 ```yaml
+	 version: '3.7'
+	 services:
+		 elasticsearch:
+			 image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+			 container_name: elasticsearch
+			 environment:
+				 - discovery.type=single-node
+				 - xpack.security.enabled=false
+			 ports:
+				 - 9200:9200
+			 volumes:
+				 - esdata:/usr/share/elasticsearch/data
+
+		 kibana:
+			 image: docker.elastic.co/kibana/kibana:8.12.2
+			 container_name: kibana
+			 environment:
+				 - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+			 ports:
+				 - 5601:5601
+			 depends_on:
+				 - elasticsearch
+
+	 volumes:
+		 esdata:
+	 ```
+
+2. **Start Containers**
+	 Open a PowerShell in your project folder and run:
+	 ```powershell
+	 docker compose up
+	 ```
+
+3. **Access via Browser**
+	 - ElasticSearch API: [http://localhost:9200](http://localhost:9200)
+	 - Kibana UI: [http://localhost:5601](http://localhost:5601)
+
+## Notes
+- The containers will run as long as the terminal is open.
+- You can stop the containers with `docker compose down`.
+- Data is stored in the `esdata` volume and persists after stopping the containers.
+
+---
+
+Further information: [ElasticSearch Docker Docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html)
 # Elasticsearch & Kibana Cookbook
 
 ## Table of Contents
