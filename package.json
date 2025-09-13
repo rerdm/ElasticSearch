@@ -1,0 +1,15 @@
+{
+  "name": "elasticsearch-playwright-tests",
+  "version": "1.0.0",
+  "description": "Playwright tests for ElasticSearch API actions",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test"
+  },
+  "devDependencies": {
+    "playwright": "^1.43.0"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}

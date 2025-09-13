@@ -1,3 +1,21 @@
+## Creating an Index in ElasticSearch and Viewing It in Kibana
+
+To create a new index in ElasticSearch and view it in Kibana:
+
+1. Make sure your containers are running (`make up` or `docker compose up`).
+2. Open a terminal and run the following command to create a sample index:
+	```powershell
+	curl -X PUT "http://localhost:9200/my-first-index"
+	```
+	Alternatively, you can use Postman or any REST client to send a PUT request to `http://localhost:9200/my-first-index`.
+3. Add some sample data (optional):
+	```powershell
+	curl -X POST "http://localhost:9200/my-first-index/_doc" -H "Content-Type: application/json" -d "{ \"name\": \"Sample Document\" }"
+	```
+4. In Kibana, go to **Stack Management > Index Patterns** and create a new index pattern matching `my-first-index`.
+5. Go to **Discover** to view and explore your data.
+
+For more details, see the official documentation: [Create an index | ElasticSearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-create-index.html)
 
 # ElasticSearch & Kibana Locally with Docker
 
@@ -60,6 +78,57 @@ After downloading, extract the `make.exe` from the ZIP file and copy it to a fol
 3. **Access via Browser**
 	 - ElasticSearch API: [http://localhost:9200](http://localhost:9200)
 	 - Kibana UI: [http://localhost:5601](http://localhost:5601)
+
+## Automated API Tests with Playwright
+
+This project uses Playwright to test basic ElasticSearch actions via HTTP API.
+
+### Project Structure
+
+- `src/esActions.js`: Contains helper functions for ElasticSearch API actions (create index, delete index, add document).
+- `tests/elasticsearch.spec.js`: Contains Playwright tests that call the helper functions and use expects.
+
+### Example Test
+
+```js
+const { test, expect } = require('@playwright/test');
+const { createIndex, deleteIndex, addDocument } = require('../src/esActions');
+
+test('Create index', async () => {
+  const res = await createIndex('playwright-test-index');
+  expect(res.ok()).toBeTruthy();
+});
+```
+
+### Run Tests
+
+1. Install dependencies:
+		```powershell
+		npm install
+		```
+
+2. Run all Playwright tests:
+		```powershell
+		npx playwright test
+		```
+
+3. Run a single test file:
+		```powershell
+		npx playwright test tests/elasticsearch.spec.js
+		```
+
+4. Run tests by tag:
+		- Add tags to your tests using `.describe` or `.test` blocks, e.g. `test.describe('create', ...)` or `test('delete', ...)`
+		- Run tests with a specific tag:
+			```powershell
+			npx playwright test --grep @create
+			```
+		- Example for a tagged test:
+			```js
+			test('@create should create index', async () => {
+				// ...
+			});
+			```
 
 ## Notes
 - The containers will run as long as the terminal is open.
